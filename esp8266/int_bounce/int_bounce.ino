@@ -34,6 +34,7 @@ void setup() {
 
 int value = 0;
 int i;
+long bounce = 0;
 void loop() {
 
   WiFiClient client = server.available();
@@ -45,17 +46,14 @@ void loop() {
     delay(1);
   }
 
-  String request = client.readStringUntil('\r');
-  Serial.println(request);
+  //String request = client.readStringUntil('\r');
+  bounce = client.parseInt();
+  Serial.println("bounce: " + String(bounce));
   client.flush();
+  bounce++;
 
-  // Return the response
-  value = 0;
-  for (i=0;i<=50;i++) {
-    value = value + analogRead(A0);
-  }
   String data = String(millis()) + "::" + 
-    String((double)value/(double)i) + "::" + 
+    String(bounce) + "::" + 
     String(WiFi.localIP());
   Serial.print("Sending data: ");
   Serial.print(data);
