@@ -44,17 +44,23 @@
  *     outside of the box
  *    Returns: Temperature and pressure
  *****************************************************/
-
+/*****************************************************
+ * WiFi - 
+ *     need to connect and dump data to a server over
+ *     the wifi periodically
+ *****************************************************/
 // * TSL2561 - Lux sensor
 #include <Wire.h>
-
 #include <Adafruit_Sensor.h>
 #include <Adafruit_TSL2561_U.h>
 #include <pgmspace.h>
 #include "TSL2561.h"
-Adafruit_TSL2561_Unified tsl = Adafruit_TSL2561_Unified(TSL2561_ADDR_FLOAT, 0x39);
-
-
+Adafruit_TSL2561_Unified tsl2562 = Adafruit_TSL2561_Unified(TSL2561_ADDR_FLOAT, 0x39);
+// * MPL115A2 - Temperature and pressure
+#include <Wire.h>
+#include <Adafruit_MPL115A2.h>
+#include "MPL115A2.h"
+Adafruit_MPL115A2 mpl115a2;
 
  
 void setup() {
@@ -62,15 +68,22 @@ void setup() {
   Wire.begin(0,2); // SDA, SCL
 
   // * TSL2561 - Lux sensor
-  setup_TSL2561(&tsl);
-  
-
+  setup_TSL2561(&tsl2562);
+  // * MPL115A2 - Temperature and pressure
+  setup_MPL115A2(&mpl115a2);
 }
 
 void loop() {
   // * TSL2561 - Lux sensor
-  Serial.print(getLUX(&tsl)); Serial.println(" lux");
+  Serial.print(getLUX(&tsl2562)); Serial.println(" lux");
+  // * MPL115A2 - Temperature and pressure
+  float pressureKPA = 0, temperatureC = 0;
+  getPT(&mpl115a2, &pressureKPA, &temperatureC);
+  Serial.print("Pressure: "); Serial.print(pressureKPA, 4); Serial.print(" kPa  ");
+  Serial.print("Temp: "); Serial.print(temperatureC, 1); Serial.println(" *C");
 
+
+
+  
   delay(3000);
-
 }
